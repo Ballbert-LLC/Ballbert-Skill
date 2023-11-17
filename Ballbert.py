@@ -44,34 +44,6 @@ class Ballbert(Skill):
 
         assistant.websocket_client.add_route(handle_audio, "audio")
         
-        #Event Routes
-        def handle_keyword(source):
-            print("Keyword")
-
-            t= threading.Thread(target=self.handle_keyword, args=(source,))
-            t.start()
-
-        event_handler.on("Keyword", handle_keyword)
-        
-    def handle_keyword(self, source):
-        print("Keyword Detected")
-
-        audio_data = self.recogniser.listen(source)
-        
-        # Compress binary audio data using zlib
-        compressed_audio_data = zlib.compress(audio_data.frame_data)
-
-        # Convert compressed data to base64-encoded string
-        base64_compressed_audio_data = base64.b64encode(compressed_audio_data).decode(
-            "utf-8"
-        )
-
-        assistant.websocket_client.send_message(
-            "handle_audio",
-            audio_data=base64_compressed_audio_data,
-            sample_rate=audio_data.sample_rate,
-            sample_width=audio_data.sample_width,
-        )
 
     @reg(name="get_available")
     def get_available(self, double_check=False):
